@@ -43,12 +43,24 @@ function clearCalculationView() {
   pass;
 }
 
-function populateAnswerView() {
-  pass;
+function populateAnswerView(pressedKey) {
+  if (answerView.textContent*1 == 0) {
+    answerView.textContent = pressedKey;
+  }
+  else if (answerView.textContent.includes(".") && pressedKey == ".") {
+    console.log("Decimal Already Present");
+  }
+  else {
+    answerView.textContent += pressedKey;
+  }
 }
 
 function clearAnswerView() {
   pass;
+}
+
+function parseAnswerView() {
+    pass;
 }
 
 function operate() {
@@ -73,8 +85,18 @@ function test(event) {
 // Main Logic
 
 browserWindow.addEventListener("keydown", (event) => {
-  pressedKey = event.key;
-  if (!typeOfKeyPressed(pressedKey) == false) {
+  let pressedKey = event.key;
+  let typeOfKey = typeOfKeyPressed(pressedKey);
+  if (typeOfKey == "NUMBER" || typeOfKey == "DECIMAL") {
+    
     console.log(pressedKey);
+    populateAnswerView(pressedKey);
+
+
+
+  } else if (typeOfKey == "OPERATOR") {
+    console.log("OP");
+  } else {
+    console.log("Key Not Allowed");
   }
 });
