@@ -55,12 +55,13 @@ body {
 #calculationView {
     color: #cfcfcf;
     font-size: 20px;
-    padding-right: 20px;
+    margin: 0 20px;
     text-align: end;
     flex: 1;
     display: flex;
     flex-direction: column-reverse;
     user-select: none;
+    white-space: nowrap;
     overflow-x: scroll;
     overflow-y: hidden;
     scrollbar-width: none;
@@ -70,7 +71,7 @@ body {
     background-color: #25273e;
     color: #ffffff;
     margin: 0 10px;
-    outline: none;
+    /* outline: none; */
     text-align: end;
     flex: 2;
     font-size: 50px;
