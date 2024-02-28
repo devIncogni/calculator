@@ -49,7 +49,7 @@ function clearCalculationView() {
 }
 
 function populateAnswerView(content) {
-  if (answerView.textContent * 1 == 0) {
+  if (answerView.textContent * 1 == 0 && content != "." && !answerView.textContent.includes("0.")) {
     answerView.textContent = content;
   } else if (answerView.textContent.includes(".") && content == ".") {
     console.log("Decimal Already Present");
@@ -95,8 +95,8 @@ function operate(o1, o2, op) {
       return reci(o1);
 
     default:
-      console.log("Operation Failed");
-      break;
+      console.log("No Operation");
+      return o1;
   }
 }
 
@@ -236,33 +236,24 @@ browserWindow.addEventListener("keydown", (event) => {
 
   } else if (typeOfKey == "OPERATOR") {
 
-        if (lastKeyWasOperator) {
-            populateCalculationView(answer, typeOfOperator(pressedKey));
-        }
-
-        else {
             console.log(pressedKey);
 
+        if (lastKeyWasOperator) {
+            lastKeyWasOperator = true;
+            operator = typeOfOperator(pressedKey);
+            populateCalculationView(answer, operator)
+
+        }
+
+        else{
             lastKeyWasOperator = true;
             var1 = parseAnswerView();
-            
-
+            answer = roundOff(operate(var1, var2, operator));
+            var2 = answer;
+            var1 = null;
             operator = typeOfOperator(pressedKey);
-            populateCalculationView(var1, operator);
-            clearAnswerView();
-            if (var2 != null) {
-                answer = roundOff(operate(var1, var2, operator));
-                populateCalculationView(answer, operator)
-            }
-            else {
-                var2 = var1;
-            }
-
-            // answer = roundOff(operate(var1, var2, typeOfOperator(pressedKey)));
-            // var2 = answer;
-            // var1 = null;
-            // populateCalculationView(answer, typeOfOperator(pressedKey))
-            // populateAnswerView(answer); 
+            populateCalculationView(answer, operator)
+            // populateAnswerView(answer);
         }
 
   } else {
