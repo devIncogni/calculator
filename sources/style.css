@@ -1,0 +1,131 @@
+/* Dark Mode */
+/* #151a30 bluish black
+#25273e lighter bluish black
+#30da05 green
+#f9f9f7 white for numpad and number buttons
+#fefdfa white for display */
+
+/* Light Mode */
+/* #ffffff display white and numpad
+#efefef greyish white for number buttons
+#30da05 green
+black for text */
+
+/* Generic Start */
+* {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Generic End */
+
+/* Calculator Body Generic Start */
+#calcBody {
+    border-radius: 8px;
+    height: 480px;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0px 0px 12px 0px black;
+}
+
+/* Calculator Body Generic End */
+
+/* Calculator Screen Start */
+#screen {
+    background-color: #25273e;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#calculationView {
+    color: #cfcfcf;
+    font-size: 20px;
+    padding-right: 20px;
+    text-align: end;
+    flex: 1;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#answerView {
+    background-color: #25273e;
+    color: #ffffff;
+    padding-right: 10px;
+    outline: none;
+    text-align: end;
+    flex: 2;
+    font-size: 50px;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+}
+
+/* Calculator Screen End */
+
+/* Calculator NumPad Start */
+#numPad {
+    flex: 3;
+    display: flex;
+    gap: 2px;
+    background-color: #151a30;
+    padding: 5px;
+}
+
+.column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 2px;
+}
+
+.number,
+.operatorSign {
+    background-color: #151a30;
+    color: #f9f9f7;
+    flex: 1;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.number:hover {
+    background-color: #191e37;
+}
+
+.operatorSign {
+    background-color: #25273e;
+    color: #2cb20a;
+}
+
+.operatorSign:hover {
+    background-color: #2b2d45;
+    color: #2cb20a;
+}
+
+#eQual {
+    background-color: #2cb20a;
+    color: #f9f9f9;
+}
+
+#eQual:hover {
+    background-color: #3dce19;
+    color: #f9f9f9;
+}
+
+/* Calculator NumPad End */
