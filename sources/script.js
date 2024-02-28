@@ -1,4 +1,4 @@
-// Global Variable Declarations Start
+//#region Global Variable Declarations Start
 
 /** @type {Number} */
 let var1 = null;
@@ -11,11 +11,12 @@ let answer = null;
 
 const browserWindow = window;
 const answerView = document.querySelector("#answerView");
+const calcView = document.querySelector("#calculationView");
 
 const numString = "0123456789";
 const operatorString = "+-*/^%";
 
-// Global Variable Declarations End
+//#endregion Global Variable Declarations End
 
 // All Functions Here
 
@@ -39,26 +40,26 @@ function typeOfOperator(pressedKey) {
   return pressedKey;
 }
 
-function populateCalculationView() {
-  pass;
+function populateCalculationView(content, op) {
+  calcView.textContent = content.toString()+" "+op.toString();
 }
 
 function clearCalculationView() {
   pass;
 }
 
-function populateAnswerView(pressedKey) {
+function populateAnswerView(content) {
   if (answerView.textContent * 1 == 0) {
-    answerView.textContent = pressedKey;
-  } else if (answerView.textContent.includes(".") && pressedKey == ".") {
+    answerView.textContent = content;
+  } else if (answerView.textContent.includes(".") && content == ".") {
     console.log("Decimal Already Present");
   } else {
-    answerView.textContent += pressedKey;
+    answerView.textContent += content;
   }
 }
 
-function clearAnswerView() {
-  pass;
+function clearAnswerView(resetValue = '0') {
+  answerView.textContent = resetValue;
 }
 
 function parseAnswerView() {
@@ -99,7 +100,7 @@ function operate(o1, o2, op) {
   }
 }
 
-// Operation Functions Start
+//#region Operation Functions Start
 
 function roundOff(number) {
   return Math.round(number * 10000) / 10000;
@@ -194,7 +195,7 @@ function reci(o1) {
   return 1 / o1;
 }
 
-// Operation Functions End
+//#endregion
 
 /**
  * @param {KeyboardEvent} event
@@ -214,21 +215,56 @@ function scrollToEnd(scrollableElement) {
 
 // Main Logic
 
+let lastKeyWasOperator = false;
+
 browserWindow.addEventListener("keydown", (event) => {
   let pressedKey = event.key;
   let typeOfKey = typeOfKeyPressed(pressedKey);
+
+
   if (typeOfKey == "NUMBER" || typeOfKey == "DECIMAL") {
 
     console.log(pressedKey);
+
+    if (lastKeyWasOperator) {
+        clearAnswerView();
+    }
+
     populateAnswerView(pressedKey);
     scrollToEnd(answerView);
+    lastKeyWasOperator = false;
 
   } else if (typeOfKey == "OPERATOR") {
 
-    console.log("OP");
-    var1 = parseAnswerView();
-    answer = operate(var1, var2, typeOfOperator(pressedKey));
-    
+        if (lastKeyWasOperator) {
+            populateCalculationView(answer, typeOfOperator(pressedKey));
+        }
+
+        else {
+            console.log(pressedKey);
+
+            lastKeyWasOperator = true;
+            var1 = parseAnswerView();
+            
+
+            operator = typeOfOperator(pressedKey);
+            populateCalculationView(var1, operator);
+            clearAnswerView();
+            if (var2 != null) {
+                answer = roundOff(operate(var1, var2, operator));
+                populateCalculationView(answer, operator)
+            }
+            else {
+                var2 = var1;
+            }
+
+            // answer = roundOff(operate(var1, var2, typeOfOperator(pressedKey)));
+            // var2 = answer;
+            // var1 = null;
+            // populateCalculationView(answer, typeOfOperator(pressedKey))
+            // populateAnswerView(answer); 
+        }
+
   } else {
     console.log("Key Not Allowed");
   }
