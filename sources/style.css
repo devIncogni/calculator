@@ -61,12 +61,15 @@ body {
     display: flex;
     flex-direction: column-reverse;
     user-select: none;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-width: none;
 }
 
 #answerView {
     background-color: #25273e;
     color: #ffffff;
-    padding-right: 10px;
+    margin: 0 10px;
     outline: none;
     text-align: end;
     flex: 2;
@@ -74,6 +77,9 @@ body {
     display: flex;
     flex-direction: column-reverse;
     justify-content: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scrollbar-width: none;
 }
 
 /* Calculator Screen End */

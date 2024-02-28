@@ -60,7 +60,7 @@ function clearAnswerView() {
 }
 
 function parseAnswerView() {
-    pass;
+    return answerView.textContent*1;
 }
 
 function operate() {
@@ -80,6 +80,11 @@ function test(event) {
   answerView.textContent += event.key;
 }
 
+function scrollToEnd(scrollableElement) {
+    scrollableElement.scrollLeft = scrollableElement.scrollWidth;
+    scrollableElement.scrollTop = scrollableElement.scrollHeight;
+}
+
 // All Functions Above
 
 // Main Logic
@@ -91,11 +96,15 @@ browserWindow.addEventListener("keydown", (event) => {
     
     console.log(pressedKey);
     populateAnswerView(pressedKey);
-
-
+    scrollToEnd(answerView);
 
   } else if (typeOfKey == "OPERATOR") {
+    
     console.log("OP");
+    parseAnswerView()
+
+
+
   } else {
     console.log("Key Not Allowed");
   }
