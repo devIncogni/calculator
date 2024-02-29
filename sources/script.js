@@ -334,7 +334,11 @@ function main(pressedKey) {
     if (typeOfKeyPressed(lastKey) == "OPERATOR") {
       clearAnswerView();
     }
-    if (typeOfKeyPressed(lastKey) == "FNOP") {
+    if (
+      (typeOfKeyPressed(lastKey) == "FNOP" ||
+        typeOfKeyPressed(lastKey) == "SPLOP") &&
+      lastKey != "Backspace"
+    ) {
       clear();
     }
     populateAnswerView(pressedKey);
@@ -399,6 +403,21 @@ function main(pressedKey) {
           clearAnswerView();
           populateAnswerView(answer);
           break;
+        }
+
+      case "allClear":
+        clear();
+        break;
+
+      case "Backspace":
+        let t = answerView.textContent;
+        if (t.length < 2) {
+          clearAnswerView();
+        }
+        //
+        else {
+          t = t.substring(0, t.length - 1);
+          answerView.textContent = t;
         }
 
       default:
