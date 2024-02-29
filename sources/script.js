@@ -27,15 +27,11 @@ let lastKeyWasOperator = false;
 //#region All Functions Here
 
 function typeOfKeyPressed(pressedKey) {
-  if (numString.indexOf(pressedKey) != -1) {
+  if (numString.includes(pressedKey)) {
     return "NUMBER";
   } else if (pressedKey == ".") {
     return "DECIMAL";
-  } else if (
-    operatorString.indexOf(pressedKey) != -1 ||
-    pressedKey == "Enter" ||
-    pressedKey == "Backspace"
-  ) {
+  } else if (operatorString.includes(pressedKey)) {
     return "OPERATOR";
   } else {
     return false;
@@ -225,26 +221,30 @@ function scrollToEnd(scrollableElement) {
 
 // Main Logic
 
-browserWindow.addEventListener("keydown", (keyEvent) =>{
+browserWindow.addEventListener("keydown", (keyEvent) => {
   main(keyEvent.key);
 });
 
 numPadBtnsArray.map((divElementsInArray) =>
   divElementsInArray.addEventListener("click", (clickEvent) => {
-    main(clickEvent.target.id);
+    let keyPressedFromNumPad = clickEvent.target;
+
+    while (keyPressedFromNumPad != "" && keyPressedFromNumPad.id == "") {
+      keyPressedFromNumPad = keyPressedFromNumPad.parentElement;
+    }
+
+    main(keyPressedFromNumPad.id);
   })
 );
 
-
-
-
-function main(keyOrKeyLikeEvent) {
-  
-  let pressedKey = keyOrKeyLikeEvent;
+function main(keyOrKeyLikeEventID) {
+  let pressedKey = keyOrKeyLikeEventID;
   let typeOfKey = typeOfKeyPressed(pressedKey);
 
+  console.log(pressedKey);
+
   if (typeOfKey == "NUMBER" || typeOfKey == "DECIMAL") {
-    console.log(pressedKey);
+    // console.log(pressedKey);
 
     if (lastKeyWasOperator) {
       clearAnswerView();
@@ -253,28 +253,36 @@ function main(keyOrKeyLikeEvent) {
     populateAnswerView(pressedKey);
     scrollToEnd(answerView);
     lastKeyWasOperator = false;
-  } else if (typeOfKey == "OPERATOR") {
-    console.log(pressedKey);
+  }
+  //
+  else if (typeOfKey == "OPERATOR") {
+    // console.log(pressedKey);
 
     if (lastKeyWasOperator) {
       lastKeyWasOperator = true;
       operator = typeOfOperator(pressedKey);
       populateCalculationView(roundOff(answer), operator);
       scrollToEnd(calcView);
-    } else {
+    }
+    //
+    else {
       lastKeyWasOperator = true;
+
       var2 = parseAnswerView();
       answer = operate(var1, var2, operator);
       var1 = answer;
       var2 = null;
       operator = typeOfOperator(pressedKey);
+
       populateCalculationView(roundOff(answer), operator);
       clearAnswerView();
       populateAnswerView(roundOff(answer));
       scrollToEnd(answerView);
       scrollToEnd(calcView);
     }
-  } else {
+  }
+  //
+  else {
     console.log("Key Not Allowed");
   }
 }
