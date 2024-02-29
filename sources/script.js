@@ -22,8 +22,7 @@ const operatorString = "+-%*/^";
 const specialOperatorString = ["sq", "sqrt", "Q,R", "plusMinus", "1/"];
 const functionalOperatorString = ["allClear", "Enter", "Backspace"];
 
-let lastKeyWasOperator = false;
-let lastKeyWasSPLOP = false;
+let lastKey = null;
 
 //#endregion Global Variable Declarations End
 
@@ -202,6 +201,16 @@ function scrollToEnd(scrollableElement) {
   scrollableElement.scrollTop = scrollableElement.scrollHeight;
 }
 
+function clear() {
+  var1 = undefined;
+  var2 = undefined;
+  lastKey = null;
+  answer = undefined;
+  operator = undefined;
+  clearAnswerView();
+  clearCalculationView();
+}
+
 //#endregion All Functions Above
 
 // Main Logic
@@ -322,24 +331,24 @@ numPadBtnsArray.map((divElementsInArray) =>
 // }
 function main(pressedKey) {
   if (typeOfKeyPressed(pressedKey) == "NUMBER") {
-    if (lastKeyWasOperator) {
+    if (typeOfKeyPressed(lastKey) == "OPERATOR") {
       clearAnswerView();
     }
+    if (typeOfKeyPressed(lastKey) == "FNOP") {
+      clear();
+    }
     populateAnswerView(pressedKey);
-    lastKeyWasOperator = false;
-    lastKeyWasSPLOP = false;
-
   }
   //
   else if (pressedKey == "plusMinus") {
     populateAnswerView(pressedKey);
-    lastKeyWasOperator = false;
-    lastKeyWasSPLOP = false;
-
   }
   //
   else if (typeOfKeyPressed(pressedKey) == "SPLOP") {
-    if (lastKeyWasSPLOP) {
+    if (
+      typeOfKeyPressed(lastKey) == "SPLOP" ||
+      typeOfKeyPressed(lastKey) == "FNOP"
+    ) {
       clearCalculationView();
     }
     var2 = parseAnswerView();
@@ -347,21 +356,18 @@ function main(pressedKey) {
     clearAnswerView();
     populateAnswerView(answer);
     populateCalculationView(pressedKey + "(" + var2 + ")");
-    lastKeyWasSPLOP = true;
   }
   //
   else if (typeOfKeyPressed(pressedKey) == "OPERATOR") {
-    if (lastKeyWasOperator) {
+    if (typeOfKeyPressed(lastKey) == "OPERATOR") {
       operator = pressedKey;
       clearCalculationView();
       populateCalculationView(var1);
       populateCalculationView(operator);
-
     }
     //
     else {
       clearCalculationView();
-      lastKeyWasOperator = true;
       var2 = parseAnswerView();
       answer = var1 == undefined ? var2 : operate(var1, var2, operator);
       operator = pressedKey;
@@ -371,29 +377,33 @@ function main(pressedKey) {
       clearAnswerView();
       populateAnswerView(answer);
     }
-    lastKeyWasSPLOP = false;
   }
   //
   else if (typeOfKeyPressed(pressedKey) == "FNOP") {
     switch (pressedKey) {
       case "Enter":
-        clearCalculationView();
-        populateCalculationView(var1);
-        populateCalculationView(operator);
-        lastKeyWasOperator = true;
-        var2 = parseAnswerView();
-        populateCalculationView(var2);
-        populateCalculationView("=");
-        answer = var1 == undefined ? var2 : operate(var1, var2, operator);
-        // operator = pressedKey;
-        // var1 = answer;
-        clearAnswerView();
-        populateAnswerView(answer);
-        break;
+        if (lastKey == "Enter" || lastKey == null || var1 == undefined) {
+          break;
+        }
+        //
+        else {
+          clearCalculationView();
+          populateCalculationView(var1);
+          populateCalculationView(operator);
+          var2 = parseAnswerView();
+          populateCalculationView(var2);
+          populateCalculationView("=");
+          answer = var1 == undefined ? var2 : operate(var1, var2, operator);
+          operator = pressedKey;
+          var1 = undefined;
+          clearAnswerView();
+          populateAnswerView(answer);
+          break;
+        }
 
       default:
         break;
     }
-    lastKeyWasSPLOP = true;
   }
+  lastKey = pressedKey;
 }
