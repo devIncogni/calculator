@@ -12,13 +12,19 @@ let answer = null;
 const browserWindow = window;
 const answerView = document.querySelector("#answerView");
 const calcView = document.querySelector("#calculationView");
+const numPadBtnsArray = [...document.querySelectorAll(".column > div")];
+const numPadBtnsIDArray = numPadBtnsArray.map(
+  (divElementsInArray) => divElementsInArray.id
+);
 
 const numString = "0123456789";
-const operatorString = "+-*/^%";
+const operatorString = "+-*/^";
+
+let lastKeyWasOperator = false;
 
 //#endregion Global Variable Declarations End
 
-// All Functions Here
+//#region All Functions Here
 
 function typeOfKeyPressed(pressedKey) {
   if (numString.indexOf(pressedKey) != -1) {
@@ -215,11 +221,9 @@ function scrollToEnd(scrollableElement) {
   scrollableElement.scrollTop = scrollableElement.scrollHeight;
 }
 
-// All Functions Above
+//#endregion All Functions Above
 
 // Main Logic
-
-let lastKeyWasOperator = false;
 
 browserWindow.addEventListener("keydown", (event) => {
   let pressedKey = event.key;
@@ -260,3 +264,9 @@ browserWindow.addEventListener("keydown", (event) => {
     console.log("Key Not Allowed");
   }
 });
+
+numPadBtnsArray.map((divElementsInArray) =>
+  divElementsInArray.addEventListener("click", (clickEvent) => {
+    console.log(clickEvent.target.id);
+  })
+);

@@ -138,17 +138,17 @@ body {
     color: #2cb20a;
 }
 
-#eQual {
+#Enter {
     background-color: #2cb20a;
     color: #f9f9f9;
 }
 
-#eQual:hover {
+#Enter:hover {
     background-color: #3dce19;
     color: #f9f9f9;
 }
 
-#eQual:active {
+#Enter:active {
     background-color: #2cb20a;
     color: #f9f9f9;
 }
