@@ -1,13 +1,13 @@
 //#region Global Variable Declarations Start
 
 /** @type {Number} */
-let var1 = null;
+let var1 = undefined;
 /** @type {Number} */
-let var2 = null;
+let var2 = undefined;
 /** @type {String} */
-let operator = null;
+let operator = undefined;
 /** @type {Number} */
-let answer = null;
+let answer = undefined;
 
 const browserWindow = window;
 const answerView = document.querySelector("#answerView");
@@ -17,7 +17,7 @@ const numPadBtnsIDArray = numPadBtnsArray.map(
   (divElementsInArray) => divElementsInArray.id
 );
 
-const numString = "0123456789";
+const numString = "0123456789.";
 const operatorString = "+-*/^";
 const specialOperatorString = ["^2", "sqrt", "qr", "plusMinus", "reci"];
 const functionalOperatorString = ["allClear", "Enter", "Backspace"];
@@ -31,8 +31,8 @@ let lastKeyWasOperator = false;
 function typeOfKeyPressed(pressedKey) {
   if (numString.includes(pressedKey)) {
     return "NUMBER";
-  } else if (pressedKey == ".") {
-    return "DECIMAL";
+    // } else if (pressedKey == ".") {
+    //   return "DECIMAL";
   } else if (operatorString.includes(pressedKey)) {
     return "OPERATOR";
   } else if (specialOperatorString.indexOf(pressedKey) != -1) {
@@ -44,13 +44,13 @@ function typeOfKeyPressed(pressedKey) {
   }
 }
 
-function typeOfOperator(pressedKey) {
-  return pressedKey;
-}
+// function typeOfOperator(pressedKey) {
+//   return pressedKey;
+// }
 
-function populateCalculationView(content, op, contentopt = "", eq = "") {
+function populateCalculationView(content, op, contentOpt = "", eq = "") {
   calcView.textContent =
-    content.toString() + " " + op.toString() + " " + contentopt + " " + eq;
+    content.toString() + " " + op.toString() + " " + contentOpt + " " + eq;
 }
 
 function clearCalculationView() {
@@ -59,14 +59,27 @@ function clearCalculationView() {
 
 function populateAnswerView(content) {
   if (
-    answerView.textContent * 1 == 0 &&
+    answerView.textContent == "0" &&
     content != "." &&
-    !answerView.textContent.includes("0.")
+    !answerView.textContent.includes("0.") &&
+    content != "plusMinus"
   ) {
     answerView.textContent = content;
-  } else if (answerView.textContent.includes(".") && content == ".") {
+  }
+  //
+  else if (answerView.textContent.includes(".") && content == ".") {
     console.log("Decimal Already Present");
-  } else {
+  }
+  //
+  else if (content == "plusMinus") {
+    if (!answerView.textContent.includes("-")) {
+      answerView.textContent = "-" + answerView.textContent;
+    } else {
+      answerView.textContent = answerView.textContent.substring(1);
+    }
+  }
+  //
+  else {
     answerView.textContent += content;
   }
 }
@@ -101,11 +114,15 @@ function operate(o1, o2, op) {
 
     case "sqrt":
       return sqrt(o1);
-    case "q&r":
+
+    case "qr":
       return qr(o1);
 
-    case "1/":
+    case "reci":
       return reci(o1);
+
+    case "plusMinus":
+      return plusMinus(o1);
 
     default:
       console.log("No Operation");
@@ -119,56 +136,29 @@ function roundOff(number) {
   return Math.round(number * 10000) / 10000;
 }
 
-function add(o1, o2) {
-  if (o1 == null) {
-    o1 = 0;
-  }
-  if (o2 == null) {
-    o2 = 0;
-  }
-
+function add(o1 = 0, o2 = 0) {
   return o1 + o2;
 }
 
-function sub(o1, o2) {
-  if (o1 == null) {
-    o1 = 0;
-  }
-  if (o2 == null) {
-    o2 = 0;
-  }
-
+function sub(o1 = 0, o2 = 0) {
   return o1 - o2;
 }
 
-function mul(o1, o2) {
-  if (o1 == null) {
-    o1 = 1;
-  }
-  if (o2 == null) {
-    o2 = 1;
-  }
-
+function mul(o1, o2 = 1) {
   return o1 * o2;
 }
 
-function div(o1, o2) {
-  if (o1 == null) {
-    o1 = 1;
-  }
-  if (o2 == null) {
-    o2 = 1;
+function div(o1, o2 = 1) {
+  if (o2 == 0) {
+    return "ERR: Division by 0";
   }
 
   return o1 / o2;
 }
 
 function pow(o1, o2) {
-  if (o1 == null) {
-    o1 = 0;
-  }
-  if (o2 == null) {
-    o2 = 1;
+  if (o1 == 0 && o2 == 0) {
+    return "ERR: 0^0?";
   }
 
   return o1 ** o2;
@@ -201,14 +191,17 @@ function qr(o1) {
 }
 
 function reci(o1) {
-  if (o1 == null) {
-    o1 = 0;
+  if (o1 == 0) {
+    return "ERR: Division by 0";
   }
 
   return 1 / o1;
 }
-
 //#endregion
+
+function plusMinus(o1) {
+  return 1 / o1;
+}
 
 function scrollToEnd(scrollableElement) {
   scrollableElement.scrollLeft = scrollableElement.scrollWidth;
@@ -235,101 +228,114 @@ numPadBtnsArray.map((divElementsInArray) =>
   })
 );
 
-function main(keyOrKeyLikeEventID) {
-  let pressedKey = keyOrKeyLikeEventID;
-  let typeOfKey = typeOfKeyPressed(pressedKey);
+// function main(keyOrKeyLikeEventID) {
+//   let pressedKey = keyOrKeyLikeEventID;
+//   let typeOfKey = typeOfKeyPressed(pressedKey);
 
-  console.log(pressedKey);
+//   console.log(pressedKey);
 
-  if (typeOfKey == "NUMBER" || typeOfKey == "DECIMAL") {
-    // console.log(pressedKey);
+//   if (typeOfKey == "NUMBER" || typeOfKey == "DECIMAL") {
+//     // console.log(pressedKey);
 
-    if (lastKeyWasOperator) {
-      clearAnswerView();
-    }
+//     if (lastKeyWasOperator) {
+//       clearAnswerView();
+//     }
 
+//     populateAnswerView(pressedKey);
+//     scrollToEnd(answerView);
+//     lastKeyWasOperator = false;
+//   }
+//   //
+//   else if (typeOfKey == "OPERATOR") {
+//     // console.log(pressedKey);
+
+//     if (lastKeyWasOperator) {
+//       lastKeyWasOperator = true;
+//       operator = typeOfOperator(pressedKey);
+//       populateCalculationView(roundOff(answer), operator);
+//       scrollToEnd(calcView);
+//     }
+//     //
+//     else {
+//       lastKeyWasOperator = true;
+
+//       var2 = parseAnswerView();
+//       answer = operate(var1, var2, operator);
+//       var1 = answer;
+//       var2 = null;
+//       operator = typeOfOperator(pressedKey);
+
+//       populateCalculationView(roundOff(answer), operator);
+//       clearAnswerView();
+//       populateAnswerView(roundOff(answer));
+//       scrollToEnd(answerView);
+//       scrollToEnd(calcView);
+//     }
+//   }
+//   //
+//   else if (typeOfKey == "SPLOP") {
+//     console.log(pressedKey);
+//   }
+//   //
+//   else if (typeOfKey == "FNOP") {
+//     lastKeyWasOperator = true;
+//     console.log("FNOP");
+//     functionalOperatorDisplay(pressedKey);
+//   }
+//   //
+//   else {
+//     console.log("Key Not Allowed");
+//   }
+// }
+
+// function functionalOperatorDisplay(op) {
+//   switch (op) {
+//     case "allClear":
+//       clearAnswerView();
+//       clearCalculationView();
+//       var1 = null;
+//       var2 = null;
+//       answer = null;
+//       operator = null;
+//       break;
+
+//     case "Backspace":
+//       let t = answerView.textContent;
+//       if (t.length < 2) {
+//         clearAnswerView();
+//       }
+//       //
+//       else {
+//         t = t.substring(0, t.length - 1);
+//         answerView.textContent = t;
+//       }
+
+//     case "Enter":
+//       var2 = parseAnswerView();
+//       var1 = answer;
+//       answer = operate(var1, var2, operator);
+//       populateCalculationView(roundOff(var1), operator, var2, "=");
+//       var2 = null;
+//       var1 = answer;
+//       clearAnswerView();
+//       populateAnswerView(roundOff(answer));
+//       scrollToEnd(answerView);
+//       scrollToEnd(calcView);
+//       // operator = null;
+//     default:
+//       break;
+//   }
+// }
+function main(pressedKey) {
+  if (typeOfKeyPressed(pressedKey) == "NUMBER") {
     populateAnswerView(pressedKey);
-    scrollToEnd(answerView);
-    lastKeyWasOperator = false;
   }
   //
-  else if (typeOfKey == "OPERATOR") {
-    // console.log(pressedKey);
-
-    if (lastKeyWasOperator) {
-      lastKeyWasOperator = true;
-      operator = typeOfOperator(pressedKey);
-      populateCalculationView(roundOff(answer), operator);
-      scrollToEnd(calcView);
-    }
-    //
-    else {
-      lastKeyWasOperator = true;
-
-      var2 = parseAnswerView();
-      answer = operate(var1, var2, operator);
-      var1 = answer;
-      var2 = null;
-      operator = typeOfOperator(pressedKey);
-
-      populateCalculationView(roundOff(answer), operator);
-      clearAnswerView();
-      populateAnswerView(roundOff(answer));
-      scrollToEnd(answerView);
-      scrollToEnd(calcView);
-    }
+  else if (pressedKey == "plusMinus") {
+    populateAnswerView(pressedKey);
   }
   //
-  else if (typeOfKey == "SPLOP") {
-    console.log(pressedKey);
-  }
-  //
-  else if (typeOfKey == "FNOP") {
-    lastKeyWasOperator = true;
-    console.log("FNOP");
-    functionalOperatorDisplay(pressedKey);
-  }
-  //
-  else {
-    console.log("Key Not Allowed");
-  }
-}
-
-function functionalOperatorDisplay(op) {
-  switch (op) {
-    case "allClear":
-      clearAnswerView();
-      clearCalculationView();
-      var1 = null;
-      var2 = null;
-      answer = null;
-      operator = null;
-      break;
-
-    case "Backspace":
-      let t = answerView.textContent;
-      if (t.length < 2) {
-        clearAnswerView();
-      }
-      //
-      else {
-        t = t.substring(0, t.length - 1);
-        answerView.textContent = t;
-      }
-
-    case "Enter":
-      var2 = parseAnswerView();
-      var1 = answer;
-      answer = operate(var1, var2, operator);
-      populateCalculationView(roundOff(var1), operator, var2, "=");
-      var2 = null;
-      var1 = answer;
-      clearAnswerView();
-      populateAnswerView(roundOff(answer));
-      scrollToEnd(answerView);
-      scrollToEnd(calcView);
-      operator = null;
-    default:
-      break;
+  else if (typeOfKeyPressed(pressedKey) == "SPLOP") {
+    var1 = parseAnswerView();
   }
 }
