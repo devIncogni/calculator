@@ -225,8 +225,22 @@ function scrollToEnd(scrollableElement) {
 
 // Main Logic
 
-browserWindow.addEventListener("keydown", (event) => {
-  let pressedKey = event.key;
+browserWindow.addEventListener("keydown", (keyEvent) =>{
+  main(keyEvent.key);
+});
+
+numPadBtnsArray.map((divElementsInArray) =>
+  divElementsInArray.addEventListener("click", (clickEvent) => {
+    main(clickEvent.target.id);
+  })
+);
+
+
+
+
+function main(keyOrKeyLikeEvent) {
+  
+  let pressedKey = keyOrKeyLikeEvent;
   let typeOfKey = typeOfKeyPressed(pressedKey);
 
   if (typeOfKey == "NUMBER" || typeOfKey == "DECIMAL") {
@@ -263,10 +277,4 @@ browserWindow.addEventListener("keydown", (event) => {
   } else {
     console.log("Key Not Allowed");
   }
-});
-
-numPadBtnsArray.map((divElementsInArray) =>
-  divElementsInArray.addEventListener("click", (clickEvent) => {
-    console.log(clickEvent.target.id);
-  })
-);
+}
