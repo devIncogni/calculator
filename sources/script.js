@@ -241,18 +241,18 @@ browserWindow.addEventListener("keydown", (event) => {
     if (lastKeyWasOperator) {
       lastKeyWasOperator = true;
       operator = typeOfOperator(pressedKey);
-      populateCalculationView(answer, operator);
+      populateCalculationView(roundOff(answer), operator);
       scrollToEnd(calcView);
     } else {
       lastKeyWasOperator = true;
       var2 = parseAnswerView();
-      answer = roundOff(operate(var1, var2, operator));
+      answer = operate(var1, var2, operator);
       var1 = answer;
       var2 = null;
       operator = typeOfOperator(pressedKey);
-      populateCalculationView(answer, operator);
+      populateCalculationView(roundOff(answer), operator);
       clearAnswerView();
-      populateAnswerView(answer);
+      populateAnswerView(roundOff(answer));
       scrollToEnd(answerView);
       scrollToEnd(calcView);
     }
