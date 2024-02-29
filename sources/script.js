@@ -19,6 +19,8 @@ const numPadBtnsIDArray = numPadBtnsArray.map(
 
 const numString = "0123456789";
 const operatorString = "+-*/^";
+const specialOperatorString = ["^2", "sqrt", "qr", "plusMinus", "reci"];
+const functionalOperatorString = ["allClear", "Enter", "Backspace"];
 
 let lastKeyWasOperator = false;
 
@@ -33,6 +35,10 @@ function typeOfKeyPressed(pressedKey) {
     return "DECIMAL";
   } else if (operatorString.includes(pressedKey)) {
     return "OPERATOR";
+  } else if (specialOperatorString.indexOf(pressedKey) != -1) {
+    return "SPLOP";
+  } else if (functionalOperatorString.indexOf(pressedKey) != -1) {
+    return "FNOP";
   } else {
     return false;
   }
@@ -42,8 +48,9 @@ function typeOfOperator(pressedKey) {
   return pressedKey;
 }
 
-function populateCalculationView(content, op) {
-  calcView.textContent = content.toString() + " " + op.toString() + " ";
+function populateCalculationView(content, op, contentopt = "", eq = "") {
+  calcView.textContent =
+    content.toString() + " " + op.toString() + " " + contentopt + " " + eq;
 }
 
 function clearCalculationView() {
@@ -203,15 +210,6 @@ function reci(o1) {
 
 //#endregion
 
-/**
- * @param {KeyboardEvent} event
- */
-function test(event) {
-  console.log(event);
-  answerView.textContent = null;
-  answerView.textContent += event.key;
-}
-
 function scrollToEnd(scrollableElement) {
   scrollableElement.scrollLeft = scrollableElement.scrollWidth;
   scrollableElement.scrollTop = scrollableElement.scrollHeight;
@@ -282,7 +280,56 @@ function main(keyOrKeyLikeEventID) {
     }
   }
   //
+  else if (typeOfKey == "SPLOP") {
+    console.log(pressedKey);
+  }
+  //
+  else if (typeOfKey == "FNOP") {
+    lastKeyWasOperator = true;
+    console.log("FNOP");
+    functionalOperatorDisplay(pressedKey);
+  }
+  //
   else {
     console.log("Key Not Allowed");
+  }
+}
+
+function functionalOperatorDisplay(op) {
+  switch (op) {
+    case "allClear":
+      clearAnswerView();
+      clearCalculationView();
+      var1 = null;
+      var2 = null;
+      answer = null;
+      operator = null;
+      break;
+
+    case "Backspace":
+      let t = answerView.textContent;
+      if (t.length < 2) {
+        clearAnswerView();
+      }
+      //
+      else {
+        t = t.substring(0, t.length - 1);
+        answerView.textContent = t;
+      }
+
+    case "Enter":
+      var2 = parseAnswerView();
+      var1 = answer;
+      answer = operate(var1, var2, operator);
+      populateCalculationView(roundOff(var1), operator, var2, "=");
+      var2 = null;
+      var1 = answer;
+      clearAnswerView();
+      populateAnswerView(roundOff(answer));
+      scrollToEnd(answerView);
+      scrollToEnd(calcView);
+      operator = null;
+    default:
+      break;
   }
 }
