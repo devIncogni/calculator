@@ -18,11 +18,12 @@ const numPadBtnsIDArray = numPadBtnsArray.map(
 );
 
 const numString = "0123456789.";
-const operatorString = "+-*/^";
-const specialOperatorString = ["^2", "sqrt", "qr", "plusMinus", "reci"];
+const operatorString = "+-%*/^";
+const specialOperatorString = ["sq", "sqrt", "Q,R", "plusMinus", "1/"];
 const functionalOperatorString = ["allClear", "Enter", "Backspace"];
 
 let lastKeyWasOperator = false;
+let lastKeyWasSPLOP = false;
 
 //#endregion Global Variable Declarations End
 
@@ -48,9 +49,8 @@ function typeOfKeyPressed(pressedKey) {
 //   return pressedKey;
 // }
 
-function populateCalculationView(content, op, contentOpt = "", eq = "") {
-  calcView.textContent =
-    content.toString() + " " + op.toString() + " " + contentOpt + " " + eq;
+function populateCalculationView(content) {
+  calcView.textContent += content;
 }
 
 function clearCalculationView() {
@@ -109,16 +109,16 @@ function operate(o1, o2, op) {
     case "^":
       return pow(o1, o2);
 
-    case "^2":
+    case "sq":
       return sq(o1);
 
     case "sqrt":
       return sqrt(o1);
 
-    case "qr":
-      return qr(o1);
+    case "%":
+      return qr(o1, o2);
 
-    case "reci":
+    case "1/":
       return reci(o1);
 
     case "plusMinus":
@@ -180,14 +180,8 @@ function sqrt(o1) {
   return Math.sqrt(o1);
 }
 
-function qr(o1) {
-  if (o1 == null) {
-    o1 = 0;
-  }
-
-  return (
-    "(" + Math.floor(o1 / o2).toString() + ", " + (o1 % o2).toString() + ")"
-  );
+function qr(o1, o2) {
+  return o1 % o2;
 }
 
 function reci(o1) {
@@ -328,14 +322,78 @@ numPadBtnsArray.map((divElementsInArray) =>
 // }
 function main(pressedKey) {
   if (typeOfKeyPressed(pressedKey) == "NUMBER") {
+    if (lastKeyWasOperator) {
+      clearAnswerView();
+    }
     populateAnswerView(pressedKey);
+    lastKeyWasOperator = false;
+    lastKeyWasSPLOP = false;
+
   }
   //
   else if (pressedKey == "plusMinus") {
     populateAnswerView(pressedKey);
+    lastKeyWasOperator = false;
+    lastKeyWasSPLOP = false;
+
   }
   //
   else if (typeOfKeyPressed(pressedKey) == "SPLOP") {
-    var1 = parseAnswerView();
+    if (lastKeyWasSPLOP) {
+      clearCalculationView();
+    }
+    var2 = parseAnswerView();
+    answer = operate(var2, var2, pressedKey);
+    clearAnswerView();
+    populateAnswerView(answer);
+    populateCalculationView(pressedKey + "(" + var2 + ")");
+    lastKeyWasSPLOP = true;
+  }
+  //
+  else if (typeOfKeyPressed(pressedKey) == "OPERATOR") {
+    if (lastKeyWasOperator) {
+      operator = pressedKey;
+      clearCalculationView();
+      populateCalculationView(var1);
+      populateCalculationView(operator);
+
+    }
+    //
+    else {
+      clearCalculationView();
+      lastKeyWasOperator = true;
+      var2 = parseAnswerView();
+      answer = var1 == undefined ? var2 : operate(var1, var2, operator);
+      operator = pressedKey;
+      var1 = answer;
+      populateCalculationView(var1);
+      populateCalculationView(operator);
+      clearAnswerView();
+      populateAnswerView(answer);
+    }
+    lastKeyWasSPLOP = false;
+  }
+  //
+  else if (typeOfKeyPressed(pressedKey) == "FNOP") {
+    switch (pressedKey) {
+      case "Enter":
+        clearCalculationView();
+        populateCalculationView(var1);
+        populateCalculationView(operator);
+        lastKeyWasOperator = true;
+        var2 = parseAnswerView();
+        populateCalculationView(var2);
+        populateCalculationView("=");
+        answer = var1 == undefined ? var2 : operate(var1, var2, operator);
+        // operator = pressedKey;
+        // var1 = answer;
+        clearAnswerView();
+        populateAnswerView(answer);
+        break;
+
+      default:
+        break;
+    }
+    lastKeyWasSPLOP = true;
   }
 }
