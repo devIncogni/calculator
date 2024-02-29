@@ -78,6 +78,7 @@ body {
     display: flex;
     flex-direction: column-reverse;
     justify-content: center;
+    white-space: nowrap;
     overflow-x: scroll;
     overflow-y: hidden;
     scrollbar-width: none;
