@@ -149,7 +149,7 @@ function mul(o1, o2 = 1) {
 
 function div(o1, o2 = 1) {
   if (o2 == 0) {
-    return "ERR: Division by 0";
+    return "FR? Div by 0";
   }
 
   return o1 / o2;
