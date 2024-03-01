@@ -23,9 +23,37 @@ black for text */
 
 body {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    min-height: 100vh;
+    background-color: #151a30;
+    background-image: url(https://png.pngtree.com/background/20210712/original/pngtree-cute-hand-drawn-style-math-education-plaid-background-picture-image_1176716.jpg);
+    background-repeat: no-repeat;
+    background-position: left;
+    background-size: cover;
+}
+
+#header {
+    padding: 10px;
+    color: #1a1a1a;
+    background-image: linear-gradient(180deg, #ffffff86, transparent);
+    user-select: none;
+}
+
+#mainContent {
+    flex: 1;
+    display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+}
+
+#footer {
+    padding: 10px;
+    text-align: center;
+    color: #151a30;
+    text-shadow: 0 0 20px #ffffff;
+
 }
 
 /* Generic End */
