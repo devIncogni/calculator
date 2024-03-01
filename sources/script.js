@@ -157,7 +157,7 @@ function div(o1, o2 = 1) {
 
 function pow(o1, o2) {
   if (o1 == 0 && o2 == 0) {
-    return "ERR: 0^0?";
+    return "Nope 0^0";
   }
 
   return o1 ** o2;
@@ -180,12 +180,15 @@ function sqrt(o1) {
 }
 
 function qr(o1, o2) {
+  if (o2 == 0) {
+    return "FR? Div by 0";
+  }
   return o1 % o2;
 }
 
 function reci(o1) {
   if (o1 == 0) {
-    return "ERR: Division by 0";
+    return "FR? Div by 0";
   }
 
   return 1 / o1;
@@ -330,10 +333,16 @@ numPadBtnsArray.map((divElementsInArray) =>
 //   }
 // }
 function main(pressedKey) {
+  if (answer != undefined && isNaN(answer)) {
+    clear();
+    // return;
+  }
+  //
   if (typeOfKeyPressed(pressedKey) == "NUMBER") {
     if (typeOfKeyPressed(lastKey) == "OPERATOR") {
       clearAnswerView();
     }
+    //
     if (
       (typeOfKeyPressed(lastKey) == "FNOP" ||
         typeOfKeyPressed(lastKey) == "SPLOP") &&
