@@ -333,7 +333,7 @@ numPadBtnsArray.map((divElementsInArray) =>
 //   }
 // }
 function main(pressedKey) {
-  if (answer != undefined && isNaN(answer)) {
+  if (answer != undefined && isNaN(answer) || calcView.textContent.charAt(0) == "B") {
     clear();
     // return;
   }
